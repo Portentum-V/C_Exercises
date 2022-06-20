@@ -1,38 +1,87 @@
 #include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 
 #define CHAPTER_CHAR "3"
 #define PROJECT_NAME "formated IO"
 #define SUCCESS 0
 #define ERROR 1
 
+typedef struct Date {
+    int day;
+    int month;
+    int year;
+} Date;
+
 void clear_input(void) {
     while ( getchar() != '\n' );
     return;
 }
 
-void date_format() {
+int string_date(struct Date *date, char **str_date) {
+    int size = 0;
+    size = snprintf(NULL, 0, "%d%02d%02d", date->year, date->month, date->day);
+    size++;
+    *str_date = (char *)malloc(size);
+    memset(*str_date, 0, size);
+    snprintf(*str_date, size, "%d%02d%02d", date->year, date->month, date->day);
+    return size;
+}
+
+int date_format(struct Date *date) {
     int retval = ERROR;
-    int m = 0;
-    int d = 0;
-    int y = 0;
+    retval = scanf_s("%2d/%2d/%4d", &date->month, &date->day, &date->year);
+    clear_input();
+    if (retval == 3) {
+        retval = SUCCESS;
+    }
+    return retval;
+}
+
+void reformat_date() {
+    int retval = ERROR;
+    char *str_date = NULL;
+    Date date;
+    date.day = 0;
+    date.month = 0;
+    date.year = 0;
     printf("\tExercise 1: Format Date\n");
     printf("Enter a date in mm/dd/yyyy format: ");
-    retval = scanf_s("%2d/%2d/%4d", &m, &d, &y);
-    clear_input();
-    printf("y: %d\nm: %d\nd: %d\n", y, m, d);
-    printf("RetVal: %d\n", retval);
-    if (retval == 3) {
-        printf("Corrected date: %d%02d%02d\n", y, m, d);
+    retval = date_format(&date);
+    if (retval == ERROR) {
+        printf("Error!\n");
+        goto EXIT;
     }
-    else {
-        printf("Error\n");
-    }
+    printf("Year: %d\nMonth: %d\nDay: %d\n", date.year, date.month, date.day);
+    string_date(&date, &str_date);
+    printf("Corrected date: %s", str_date);
+EXIT:
     return;
 }
 
 
 void product() {
     printf("\tExercise 2: Product entry\n");
+    int retval = ERROR;
+    int item = 0;
+    float price = 0.0f;
+    char *str_date = NULL;
+    Date date = {0};
+    printf("Enter item number: ");
+    scanf_s("%d", &item);
+    printf("Enter unit price: ");
+    scanf_s("%f", &price);
+    printf("Enter purchase date: ");
+    retval = date_format(&date);
+    if (retval != SUCCESS) {
+        printf("Error!\n");
+        goto EXIT;
+    }
+    string_date(&date, &str_date);
+    printf("Item\tUnit\tPurchase\n");
+    printf("\tPrice\tDate\n");
+    printf("%d\t%.02f\t%s\t\n", item, price, str_date);
+EXIT:
     return;
 }
 
@@ -59,7 +108,7 @@ void addfrac() {
 int menu() {
     int retval = ERROR;
     int selection = 0;
-    void (*projects[])() = {date_format, product, book, phone_number, number_thing, addfrac};
+    void (*projects[])() = {reformat_date, product, book, phone_number, number_thing, addfrac};
     int size = sizeof(projects) / sizeof(projects[0]); 
     printf("\n- Menu -\n");
     printf("0 - Format Date\n");
