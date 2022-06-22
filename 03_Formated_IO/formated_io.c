@@ -7,16 +7,17 @@
 #define SUCCESS 0
 #define ERROR 1
 
-typedef struct Date {
-    int day;
-    int month;
-    int year;
-} Date;
 
 void clear_input(void) {
     while ( getchar() != '\n' );
     return;
 }
+
+typedef struct Date {
+    int day;
+    int month;
+    int year;
+} Date;
 
 int string_date(struct Date *date, char **str_date) {
     int size = 0;
@@ -69,8 +70,10 @@ void product() {
     Date date = {0};
     printf("Enter item number: ");
     scanf_s("%d", &item);
+    clear_input();
     printf("Enter unit price: ");
     scanf_s("%f", &price);
+    clear_input();
     printf("Enter purchase date: ");
     retval = date_format(&date);
     if (retval != SUCCESS) {
@@ -85,24 +88,62 @@ EXIT:
     return;
 }
 
+typedef struct Book {
+    short prefix;       /* 3 digits: 978 or 979 */
+    short registration; /* 1-5 digits */
+    int registrant;     /* Up to 7 digits */
+    int publication;    /* Up to 6 digits */
+    short check;        /* Modulus 10 */
+} Book;
+
+void print_book(Book *book) {
+    printf("Prefix (3 digits): %hu\n", book->prefix);
+    printf("Registration group (1-5 digits): %hu\n", book->registration);
+    printf("Registrant (Up to 7 digits): %u\n", book->registrant);
+    printf("Publication (Up to 6 digits): %u\n", book->publication);
+    printf("Check digit (Final single digit): %hu\n", book->check);
+    return;
+}
+
 void book() {
+    Book book = {0};
     printf("\tExercise 3: Book entry\n");
+    printf("Enter ISBN: ");
+    scanf_s("%3hu%*c%5hu%*c%7u%*c%6u%*c%1hu", &book.prefix, &book.registration, &book.registrant, &book.publication, &book.check);
+    clear_input();
+    print_book(&book);
     return;
 }
 
 void phone_number() {
+    short area = 0;
+    short pre = 0;
+    short post = 0;
     printf("\tExercise 4: Phone Number\n");
+    printf("Enter phone number [(XXX) XXX-XXXX]: ");
+    scanf_s("(%3hu) %3hu-%4hu", &area, &pre, &post);
+    clear_input();
+    printf("Standardized: %hu.%hu.%hu\n", area, pre, post);
     return;
 }
 
 void number_thing() {
     printf("\tExercise 5: 16 numbers\n");
+    
     return;
 }
 
 void addfrac() {
+    int num1, denom1, num2, denom2, result_num, result_denom;
     printf("\tExercise 6: Fractions\n");
-    return;
+    printf("Enter first fraction: ");
+    scanf("%d/%d", &num1, &denom1);
+    printf("Enter second fraction: ");
+    scanf("%d/%d", &num2, &denom2);
+    result_num = num * denom2 + num2 * denom1;
+    result_denom = denom1 * denom2;
+    printf("Sum: %d/%d\n", result_num, result_denom);
+    return 0;
 }
 
 int menu() {
