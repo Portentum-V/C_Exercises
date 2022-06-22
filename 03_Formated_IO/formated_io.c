@@ -1,6 +1,8 @@
 #include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
+#include <string.h>  // memset
+#include <stdlib.h>  // malloc
+#include <math.h>    // sqrt
+#include <stdbool.h> // bool
 
 #define CHAPTER_CHAR "3"
 #define PROJECT_NAME "formated IO"
@@ -127,23 +129,92 @@ void phone_number() {
     return;
 }
 
+unsigned short is_square(int num) {
+    double sqrt_num = 0.0;
+    unsigned short r_num = 0;
+    sqrt_num = sqrt((double) num);
+    r_num = (unsigned short)sqrt_num;
+    if (sqrt_num != r_num) {
+        r_num = 0;
+    }
+    return r_num;
+}
+
+void sum_square(short *array, unsigned short len, short *rows, short *cols, short *dias) {
+    unsigned short size = is_square(len);
+    unsigned short i = 0;
+    unsigned short r = 0;
+    unsigned short c = 0;
+    if (!size) {
+        printf("Array is not square!");
+        goto EXIT;
+    }
+    printf("Square: \n");
+    for (i; i < len; i++) {
+        printf("%hd ", array[i]);
+        if (!((i+1)%size)) {
+            printf("\n");
+        }
+        // Rows
+        r = i / size;
+        rows[r] += array[i];
+
+        // Cols
+        c = i % size;
+        cols[c] += array[i];
+
+        // Dias
+        if (r == c) {
+            dias[0] += array[i];
+        }
+        if (r == size - 1 - c) {
+            dias[1] += array[i];
+        }
+
+
+    }
+    printf("Rows: ");
+    for (r=0; r < size; r++) {
+        printf("%hu ", rows[r]);
+    }
+    printf("\n");
+    printf("Columns: ");
+    for (c=0; c < size; c++) {
+        printf("%hu ", cols[c]);
+    }
+    printf("\n");
+    printf("Diagonals: %hu %hu\n", dias[0], dias[1]);
+EXIT:
+    return;
+}
+
 void number_thing() {
+    short magic_square[16] = {0};
+    short rows[4] = {0};
+    short cols[4] = {0};
+    short dias[2] = {0};
     printf("\tExercise 5: 16 numbers\n");
-    
+    printf("Enter the numbers 1 - 16 in any order\n");
+    scanf_s(
+      "%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c%2hu%*c",
+      &magic_square[0], &magic_square[1], &magic_square[2], &magic_square[3],
+      &magic_square[4], &magic_square[5], &magic_square[6], &magic_square[7],
+      &magic_square[8], &magic_square[9], &magic_square[10], &magic_square[11],
+      &magic_square[12], &magic_square[13], &magic_square[14], &magic_square[15]);
+    clear_input();
+    sum_square(magic_square, 16, rows, cols, dias);
     return;
 }
 
 void addfrac() {
     int num1, denom1, num2, denom2, result_num, result_denom;
     printf("\tExercise 6: Fractions\n");
-    printf("Enter first fraction: ");
-    scanf("%d/%d", &num1, &denom1);
-    printf("Enter second fraction: ");
-    scanf("%d/%d", &num2, &denom2);
-    result_num = num * denom2 + num2 * denom1;
+    printf("Enter fractions X/Y+A/B: ");
+    scanf_s("%d/%d+%d/%d", &num1, &denom1, &num2, &denom2);
+    result_num = num1 * denom2 + num2 * denom1;
     result_denom = denom1 * denom2;
     printf("Sum: %d/%d\n", result_num, result_denom);
-    return 0;
+    return;
 }
 
 int menu() {
@@ -182,6 +253,7 @@ int main(int argc, char **argv) {
     printf("Back to Basics: KNK chapter %s %s.\n", CHAPTER_CHAR, PROJECT_NAME);
     do {
         retval = menu();
+        retval = ERROR;
     } while (retval != ERROR);
 
     return 0;
